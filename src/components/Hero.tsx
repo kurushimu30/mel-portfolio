@@ -159,7 +159,7 @@ export default function Hero() {
         initial={{ opacity: 0, y: 60, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 1.6, ease: cinemaTransit, delay: 0.45 }}
-        className="absolute inset-x-0 bottom-0 z-20 flex justify-center pointer-events-none h-[78vh] sm:h-[86vh] lg:h-[92vh] xl:h-[95vh]"
+        className="absolute inset-x-0 bottom-0 z-20 flex justify-center pointer-events-none transform-gpu h-[78vh] sm:h-[86vh] lg:h-[92vh] xl:h-[95vh]"
       >
         <motion.div
           animate={{ y: [0, -6, 0] }}

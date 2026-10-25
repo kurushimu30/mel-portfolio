@@ -128,8 +128,8 @@ export default function Projects() {
       id="projects"
       className="relative w-full overflow-hidden bg-transparent py-28 sm:py-36 text-white"
     >
-      {/* Background Volumetric Radiance */}
-      <div className="pointer-events-none absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[850px] h-[350px] rounded-full bg-[#8B5CF6]/10 blur-[180px]" />
+      {/* Optimized Ambient Glow: blur-3xl uses pre-baked GPU acceleration instead of 180px */}
+      <div className="pointer-events-none absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[300px] rounded-full bg-[#8B5CF6]/10 blur-3xl transform-gpu" />
 
       <div className="mx-auto max-w-[1440px] px-6 sm:px-12 relative z-10">
         
@@ -179,10 +179,10 @@ export default function Projects() {
         {/* Tarot Deck Deal & Spread Horizontal Carousel */}
         <motion.div
           onViewportEnter={() => {
-            const timer = setTimeout(() => setHasDealt(true), 750);
+            const timer = setTimeout(() => setHasDealt(true), 600);
             return () => clearTimeout(timer);
           }}
-          viewport={{ once: true, amount: 0.3 }}
+          viewport={{ once: true, amount: 0.2 }}
           className="relative mt-16 sm:mt-24 h-[440px] sm:h-[500px] flex items-center justify-center overflow-visible select-none"
         >
           {PROJECTS.map((item, index) => {
@@ -233,9 +233,9 @@ export default function Projects() {
                 }
                 transition={{
                   type: "spring",
-                  stiffness: 200,
-                  damping: 24,
-                  delay: hasDealt ? 0 : index * 0.06,
+                  stiffness: 240,
+                  damping: 26,
+                  delay: hasDealt ? 0 : index * 0.05,
                 }}
                 className={`absolute transform-gpu will-change-transform ${
                   hasDealt
@@ -245,32 +245,22 @@ export default function Projects() {
                     : "pointer-events-none cursor-default"
                 }`}
               >
-                <motion.div
-                  animate={
+                <div
+                  className={`relative overflow-hidden rounded-3xl border transition-all duration-300 bg-[#12131C] transform-gpu ${
                     hasDealt && isCenter
-                      ? { y: [0, -8, 0] }
-                      : { y: 0 }
-                  }
-                  transition={{
-                    repeat: Infinity,
-                    duration: 5,
-                    ease: "easeInOut",
-                  }}
-                  className={`relative overflow-hidden rounded-3xl border transition-colors duration-500 bg-[#12131C] ${
-                    hasDealt && isCenter
-                      ? "border-white/25 shadow-[0_25px_60px_rgba(0,0,0,0.9),0_0_30px_rgba(155,138,251,0.18)] w-[280px] sm:w-[380px] h-[360px] sm:h-[460px]"
-                      : "border-white/10 shadow-[0_15px_30px_rgba(0,0,0,0.7)] w-[260px] sm:w-[340px] h-[340px] sm:h-[420px]"
+                      ? "border-white/25 shadow-2xl shadow-black/80 w-[280px] sm:w-[380px] h-[360px] sm:h-[460px]"
+                      : "border-white/10 shadow-lg shadow-black/60 w-[260px] sm:w-[340px] h-[340px] sm:h-[420px]"
                   }`}
                 >
                   <div className="absolute inset-0 bg-gradient-to-b from-[#181926] via-[#10111A] to-[#0A0B10]" />
-                  <div className="absolute inset-0 bg-[radial-gradient(#8B5CF6_1px,transparent_1px)] [background-size:24px_24px] opacity-20 pointer-events-none" />
 
                   {item.previewUrl && (
                     <img
                       src={item.previewUrl}
                       alt={item.title}
+                      loading={index < 3 ? "eager" : "lazy"}
                       decoding="async"
-                      className="absolute inset-0 size-full object-cover opacity-90 transition-transform duration-700 hover:scale-105"
+                      className="absolute inset-0 size-full object-cover opacity-90 transition-transform duration-500 hover:scale-105"
                       onError={(e) => {
                         (e.target as HTMLElement).style.display = "none";
                       }}
@@ -278,10 +268,10 @@ export default function Projects() {
                   )}
 
                   <div className="absolute top-6 left-6 right-6 flex items-center justify-between pointer-events-none z-10">
-                    <span className="text-[11px] font-mono tracking-widest text-[#9B8AFB] bg-[#090A0F]/60 backdrop-blur-md px-2.5 py-1 rounded-md border border-white/10 uppercase">
+                    <span className="text-[11px] font-mono tracking-widest text-[#9B8AFB] bg-[#090A0F]/70 px-2.5 py-1 rounded-md border border-white/10 uppercase">
                       0{index + 1}
                     </span>
-                    <span className="text-[10px] font-mono tracking-widest text-zinc-400 bg-[#090A0F]/60 backdrop-blur-md px-2.5 py-1 rounded-md border border-white/10 uppercase">
+                    <span className="text-[10px] font-mono tracking-widest text-zinc-400 bg-[#090A0F]/70 px-2.5 py-1 rounded-md border border-white/10 uppercase">
                       ARK / PROJ
                     </span>
                   </div>
@@ -296,7 +286,7 @@ export default function Projects() {
                   </div>
 
                   <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#090A0F]/90 via-[#090A0F]/30 to-white/[0.04]" />
-                </motion.div>
+                </div>
               </motion.div>
             );
           })}
@@ -308,10 +298,10 @@ export default function Projects() {
             {hasDealt && (
               <motion.div
                 key={activeProject.id}
-                initial={{ opacity: 0, y: 16 }}
+                initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -12 }}
-                transition={{ duration: 0.45, ease: cinemaTransit }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3, ease: cinemaTransit }}
                 className="space-y-3"
               >
                 <div className="flex items-center justify-center gap-3">

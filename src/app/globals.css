@@ -40,6 +40,34 @@
   }
 }
 
+.ambient-glow, .bg-mesh {
+  pointer-events: none;
+  will-change: auto; /* Don't force excessive layer allocation */
+}
+
+/* Ensure GPU composite layers are created cleanly */
+.transform-gpu {
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Force smooth scrolling behavior globally */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Prevent layout jank on heavy elements while scrolling */
+section {
+  contain: content;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 :root {
   color-scheme: dark;
 }
