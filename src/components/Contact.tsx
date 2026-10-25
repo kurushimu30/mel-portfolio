@@ -101,7 +101,7 @@ export default function Contact() {
     },
     {
       name: "GitHub",
-      url: "https://github.com/melchacon",
+      url: "https://github.com/kurushimu30",
       handle: "melchacon",
       icon: (
         <svg className="size-4" viewBox="0 0 24 24" fill="currentColor">
