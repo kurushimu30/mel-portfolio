@@ -48,34 +48,34 @@ mel-portfolio/
 │   └── resume.pdf        # Print-ready compiled executive résumé
 ├── src/
 │   ├── app/
-│   │   ├── favicon.ico   # Legacy browser tab icon[cite: 5]
-│   │   ├── globals.css   # Global theme layers, scanlines, and typography tokens[cite: 5]
-│   │   ├── icon.svg      # Vector dynamic favicon[cite: 5]
-│   │   ├── layout.tsx    # Root metadata, font definitions, and viewport setup[cite: 5]
-│   │   └── page.tsx      # Composition root for dossier sections[cite: 5]
+│   │   ├── favicon.ico   # Legacy browser tab icon  
+│   │   ├── globals.css   # Global theme layers, scanlines, and typography tokens  
+│   │   ├── icon.svg      # Vector dynamic favicon  
+│   │   ├── layout.tsx    # Root metadata, font definitions, and viewport setup  
+│   │   └── page.tsx      # Composition root for dossier sections  
 │   ├── components/
-│   │   ├── About.tsx             # Strategic leadership narrative and personal bio[cite: 5]
-│   │   ├── ArkSection.tsx        # Organization incubator highlight and roadmap[cite: 5]
-│   │   ├── Collaborations.tsx    # Ecosystem network and partner showcase[cite: 5]
-│   │   ├── Contact.tsx           # Direct transmission console and clipboard relay[cite: 5]
-│   │   ├── CustomCursor.tsx      # Custom hardware-accelerated pointer engine[cite: 5]
-│   │   ├── Experience.tsx        # Scroll-scrubbed professional timeline[cite: 5]
-│   │   ├── GlobalBackground.tsx  # Dynamic atmospheric ambient gradient field[cite: 5]
-│   │   ├── Hero.tsx              # Parallax identity cluster and laurel medallions[cite: 5]
-│   │   ├── Manifesto.tsx         # Architectural philosophy and core mission[cite: 5]
-│   │   ├── Navbar.tsx            # Dynamic island capsule and smooth navigation[cite: 5]
-│   │   ├── Projects.tsx          # Software and game production deck[cite: 5]
-│   │   ├── Recognition.tsx       # Verified podium milestones and proof modals[cite: 5]
-│   │   ├── SectionReveal.tsx     # Viewport entrance animation wrapper[cite: 5]
-│   │   ├── SmoothScroll.tsx      # Smooth physics scroll conductor[cite: 5]
-│   │   └── TechStack.tsx         # Orbital constellation radar and tech filters[cite: 5]
+│   │   ├── About.tsx             # Strategic leadership narrative and personal bio  
+│   │   ├── ArkSection.tsx        # Organization incubator highlight and roadmap  
+│   │   ├── Collaborations.tsx    # Ecosystem network and partner showcase  
+│   │   ├── Contact.tsx           # Direct transmission console and clipboard relay  
+│   │   ├── CustomCursor.tsx      # Custom hardware-accelerated pointer engine  
+│   │   ├── Experience.tsx        # Scroll-scrubbed professional timeline  
+│   │   ├── GlobalBackground.tsx  # Dynamic atmospheric ambient gradient field  
+│   │   ├── Hero.tsx              # Parallax identity cluster and laurel medallions  
+│   │   ├── Manifesto.tsx         # Architectural philosophy and core mission  
+│   │   ├── Navbar.tsx            # Dynamic island capsule and smooth navigation  
+│   │   ├── Projects.tsx          # Software and game production deck  
+│   │   ├── Recognition.tsx       # Verified podium milestones and proof modals  
+│   │   ├── SectionReveal.tsx     # Viewport entrance animation wrapper  
+│   │   ├── SmoothScroll.tsx      # Smooth physics scroll conductor  
+│   │   └── TechStack.tsx         # Orbital constellation radar and tech filters  
 │   └── hooks/
-│       └── useSoundEffects.ts    # Parametric Web Audio API feedback synthesizer[cite: 5]
-├── .gitignore[cite: 5]
-├── AGENTS.md[cite: 5]
-├── eslint.config.mjs[cite: 5]
-├── next.config.ts[cite: 5]
-├── package.json[cite: 5]
+│       └── useSoundEffects.ts    # Parametric Web Audio API feedback synthesizer  
+├── .gitignore  
+├── AGENTS.md  
+├── eslint.config.mjs  
+├── next.config.ts  
+├── package.json  
 └── tsconfig.json
 
 ```
