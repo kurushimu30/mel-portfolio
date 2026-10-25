@@ -105,7 +105,7 @@ export default function Hero() {
       {/* Ambient Atmospheric Glow */}
       <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[750px] sm:w-[950px] h-[750px] sm:h-[950px] rounded-full bg-gradient-to-tr from-[#9B8AFB]/10 via-[#43C6C5]/5 to-transparent blur-[140px] z-0" />
 
-      {/* Layer 1: Background Wordmark (Full responsive scaling) */}
+      {/* Layer 1: Background Wordmark */}
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 0.75, scale: 0.8 }}
@@ -167,10 +167,11 @@ export default function Hero() {
           className="relative w-full max-w-[850px] lg:max-w-[800px] xl:max-w-[950px] h-full"
         >
           <Image
-            src="/carl.svg"
+            src="/Carl.png"
             alt="Mel Carl Chacon"
             fill
             priority
+            unoptimized
             className="object-contain object-bottom drop-shadow-[0_20px_50px_rgba(0,0,0,0.9)]"
           />
         </motion.div>
@@ -190,7 +191,7 @@ export default function Hero() {
             animate="visible"
             className="max-w-lg lg:max-w-2xl flex flex-col space-y-5 sm:space-y-6 pointer-events-auto select-text drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)]"
           >
-            {/* Handwritten Greeting with Gestural Swell */}
+            {/* Handwritten Greeting */}
             <motion.span
               variants={{
                 hidden: { opacity: 0, rotate: -8, scale: 0.85, y: 15 },
@@ -207,7 +208,7 @@ export default function Hero() {
               Hi, I&apos;m
             </motion.span>
 
-            {/* Display Name with Grand Horizon Strike */}
+            {/* Display Name */}
             <motion.h1
               variants={{
                 hidden: { opacity: 0, y: 35, scale: 0.96, filter: "blur(12px)" },
@@ -263,7 +264,7 @@ export default function Hero() {
             </motion.div>
           </motion.div>
 
-          {/* Right Block: Grand Materialization of Laurel Insignias */}
+          {/* Right Block: Laurel Insignias */}
           <div className="flex flex-col items-center justify-center pointer-events-auto pr-2 xl:pr-6">
             <div className="hidden lg:flex flex-col items-center gap-8 xl:gap-10 drop-shadow-[0_20px_50px_rgba(0,0,0,0.95)]">
               {RECOGNITIONS.map((item, idx) => {
@@ -280,7 +281,6 @@ export default function Hero() {
                     }}
                     className={item.alignOffsetClass}
                   >
-                    {/* Continuous Smooth Orbital Float Loop */}
                     <motion.div
                       animate={{ y: [0, item.floatOffset, 0] }}
                       transition={{
@@ -291,10 +291,8 @@ export default function Hero() {
                       }}
                       className="flex flex-col items-center text-center cursor-default group transition-transform duration-500 w-[280px] xl:w-[340px]"
                     >
-                      {/* Grand Laurel Medallion Head */}
                       <div className="relative flex items-center justify-center">
-                        
-                        {/* Left Laurel Branch SVG (Blooming Motion) */}
+                        {/* Left Laurel Branch */}
                         <motion.svg
                           initial={{ opacity: 0, scaleX: 0 }}
                           animate={{ opacity: 1, scaleX: 1 }}
@@ -308,7 +306,6 @@ export default function Hero() {
 
                         {/* Circular Core Medallion Disc */}
                         <div className="relative size-28 xl:size-32 rounded-full flex flex-col items-center justify-center border-2 border-[#9B8AFB]/60 bg-gradient-to-b from-[#1f2035] via-[#121320] to-[#0A0B10] shadow-[0_0_45px_rgba(155,138,251,0.25)] ring-1 ring-white/15 group-hover:border-[#9B8AFB] group-hover:shadow-[0_0_60px_rgba(155,138,251,0.45)] transition-all duration-300">
-                          {/* Dashed Inner Orbit */}
                           <div className="absolute inset-2.5 rounded-full border border-dashed border-white/20 pointer-events-none" />
 
                           <IconComponent
@@ -321,7 +318,7 @@ export default function Hero() {
                           </span>
                         </div>
 
-                        {/* Right Laurel Branch SVG (Blooming Motion) */}
+                        {/* Right Laurel Branch */}
                         <motion.svg
                           initial={{ opacity: 0, scaleX: 0 }}
                           animate={{ opacity: 1, scaleX: 1 }}
