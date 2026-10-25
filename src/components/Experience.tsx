@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useRef } from "react";
-import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
+import React, { useState, useRef, useEffect } from "react";
+import { motion, useScroll, useTransform, useMotionValueEvent, AnimatePresence } from "framer-motion";
 import { ChevronUp, ChevronDown, X, ArrowUpRight, CheckCircle2 } from "lucide-react";
 import { useSoundEffects } from "@/hooks/useSoundEffects";
 
@@ -422,42 +422,9 @@ const MILESTONES: Milestone[] = [
   },
 ];
 
-// Distance-aware deceleration scroll that handles long pinned stages cleanly
-function smoothScrollTo(targetY: number, baseDuration: number = 1000) {
-  const scrollElement = document.scrollingElement || document.documentElement;
-  const startY = scrollElement.scrollTop || window.scrollY;
-  const diff = targetY - startY;
-
-  if (Math.abs(diff) < 4) return;
-
-  const distance = Math.abs(diff);
-  const duration = Math.min(Math.max(baseDuration, distance * 0.12), 1600);
-
-  let startTime: number | null = null;
-  const easeOutQuint = (t: number) => 1 - Math.pow(1 - t, 5);
-
-  function step(currentTime: number) {
-    if (startTime === null) startTime = currentTime;
-    const elapsed = currentTime - startTime;
-    const progress = Math.min(elapsed / duration, 1);
-    const ease = easeOutQuint(progress);
-
-    const nextY = startY + diff * ease;
-    window.scrollTo(0, nextY);
-    scrollElement.scrollTop = nextY;
-
-    if (progress < 1) {
-      requestAnimationFrame(step);
-    }
-  }
-
-  requestAnimationFrame(step);
-}
-
 const N = MILESTONES.length;
-const STEP_PX = 240;
+const STEP_PX = 200;
 const TOTAL_CONVEYOR_HEIGHT = (N - 1) * STEP_PX;
-const CHAMBER_PADDING = 80;
 
 export default function Experience() {
   const { playHoverTick, playSelectPing } = useSoundEffects();
@@ -468,6 +435,25 @@ export default function Experience() {
   const [confirmSkip, setConfirmSkip] = useState(false);
   const confirmTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Lock background scroll when modal inspection is open
+  useEffect(() => {
+    if (activeModalItem) {
+      document.body.style.overflow = "hidden";
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === "Escape") {
+          setActiveModalItem(null);
+        }
+      };
+      window.addEventListener("keydown", handleKeyDown);
+      return () => {
+        document.body.style.overflow = "unset";
+        window.removeEventListener("keydown", handleKeyDown);
+      };
+    } else {
+      document.body.style.overflow = "unset";
+    }
+  }, [activeModalItem]);
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
@@ -476,7 +462,7 @@ export default function Experience() {
   const conveyorY = useTransform(
     scrollYProgress,
     [0, 1],
-    [CHAMBER_PADDING, -TOTAL_CONVEYOR_HEIGHT + CHAMBER_PADDING]
+    [0, -TOTAL_CONVEYOR_HEIGHT]
   );
 
   const trailHeight = useTransform(
@@ -508,363 +494,354 @@ export default function Experience() {
   };
 
   return (
-    <section
-      ref={containerRef}
-      id="experience"
-      className="relative w-full bg-transparent"
-      style={{ height: `${100 + N * 60}vh` }}
-    >
-      {/* Sticky Viewport Stage */}
-      <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between px-6 pt-16 pb-8 sm:px-12 lg:px-20">
-        
-        {/* Header */}
-        <header className="relative z-30 mx-auto max-w-2xl shrink-0 text-center">
-          <p className="text-xs font-semibold uppercase tracking-widest text-[#9B8AFB]">
-            Timeline &amp; Roles
-          </p>
-          <h2 className="mt-1 text-3xl font-extrabold uppercase tracking-tight text-white sm:text-5xl font-[family-name:var(--font-manrope)]">
-            Where I Put Ideas <br />
-            <span className="text-[#9B8AFB]">Into Practice.</span>
-          </h2>
-          <p className="mt-2 text-xs text-zinc-400 sm:text-sm font-[family-name:var(--font-inter)]">
-            Scroll to glide through the timeline. Nodes fade into focus as they reach center.
-          </p>
-        </header>
-
-        {/* Central Viewing Chamber */}
-        <div className="relative mx-auto my-2 w-full max-w-5xl flex-1 overflow-hidden [mask-image:linear-gradient(to_bottom,transparent_0%,black_15%,black_85%,transparent_100%)]">
+    <>
+      <section
+        ref={containerRef}
+        id="experience"
+        className="relative w-full bg-transparent"
+        style={{ height: `${(N + 1) * 35}vh` }}
+      >
+        {/* Sticky Viewport Stage */}
+        <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between px-6 pt-20 pb-8 sm:px-12 lg:px-20">
           
-          {/* Traveling Track Conveyor */}
-          <motion.div
-            style={{
-              y: conveyorY,
-              top: "30%",
-              height: `${TOTAL_CONVEYOR_HEIGHT}px`,
-            }}
-            className="absolute left-0 right-0 will-change-transform"
-          >
-            {/* The Neutral Vertical Spine */}
-            <div className="absolute left-6 sm:left-1/2 top-0 bottom-0 w-0.5 -translate-x-1/2 bg-white/10" />
+          {/* Header */}
+          <header className="relative z-30 mx-auto max-w-2xl shrink-0 text-center">
+            <p className="text-xs font-semibold uppercase tracking-widest text-[#9B8AFB]">
+              Timeline &amp; Roles
+            </p>
+            <h2 className="mt-1 text-3xl font-extrabold uppercase tracking-tight text-white sm:text-5xl font-[family-name:var(--font-manrope)]">
+              Where I Put Ideas <br />
+              <span className="text-[#9B8AFB]">Into Practice.</span>
+            </h2>
+            <p className="mt-2 text-xs text-zinc-400 sm:text-sm font-[family-name:var(--font-inter)]">
+              Scroll to traverse the timeline. Active roles settle into the center focus line.
+            </p>
+          </header>
 
-            {/* Glowing Active Trail */}
+          {/* Central Viewing Chamber */}
+          <div className="relative mx-auto my-auto w-full max-w-5xl h-[52vh] overflow-hidden [mask-image:linear-gradient(to_bottom,transparent_0%,black_15%,black_85%,transparent_100%)]">
+            
+            {/* Traveling Track Conveyor */}
             <motion.div
-              style={{ height: trailHeight }}
-              className="absolute left-6 sm:left-1/2 top-0 w-0.5 -translate-x-1/2 bg-gradient-to-b from-[#8B5CF6]/20 via-[#8B5CF6]/60 to-[#8B5CF6] shadow-[0_0_12px_#8B5CF6]"
-            />
+              style={{
+                y: conveyorY,
+                top: "50%",
+                height: `${TOTAL_CONVEYOR_HEIGHT}px`,
+              }}
+              className="absolute left-0 right-0 will-change-transform transform-gpu"
+            >
+              {/* Neutral Vertical Spine */}
+              <div className="absolute left-6 sm:left-1/2 top-0 bottom-0 w-0.5 -translate-x-1/2 bg-white/10" />
 
-            {/* All Nodes mapped continuously */}
-            {MILESTONES.map((item, i) => {
-              const nodeY = i * STEP_PX;
-              const isLeft = i % 2 === 0;
-              const isCurrent = i === activeIndex;
-              const distance = Math.abs(i - activeIndex);
+              {/* Glowing Active Trail */}
+              <motion.div
+                style={{ height: trailHeight }}
+                className="absolute left-6 sm:left-1/2 top-0 w-0.5 -translate-x-1/2 bg-gradient-to-b from-[#8B5CF6]/30 via-[#8B5CF6] to-[#9B8AFB] shadow-[0_0_12px_#8B5CF6]"
+              />
 
-              const opacity = isCurrent ? 1 : distance === 1 ? 0.35 : 0.08;
-              const scale = isCurrent ? 1 : 0.95;
+              {/* All Nodes mapped */}
+              {MILESTONES.map((item, i) => {
+                const nodeY = i * STEP_PX;
+                const isLeft = i % 2 === 0;
+                const isCurrent = i === activeIndex;
+                const distance = Math.abs(i - activeIndex);
 
-              return (
-                <div
-                  key={item.id}
-                  className="absolute inset-x-0 flex items-center justify-center transition-all duration-300"
-                  style={{
-                    top: `${nodeY}px`,
-                    opacity,
-                    transform: `translateY(-50%) scale(${scale})`,
-                    pointerEvents: isCurrent ? "auto" : "none",
-                  }}
-                >
-                  {/* Timeline Stop Point */}
+                const opacity = isCurrent ? 1 : distance === 1 ? 0.35 : 0.08;
+                const scale = isCurrent ? 1 : 0.94;
+
+                return (
                   <div
-                    onClick={() => jumpToIndex(i)}
-                    onMouseEnter={() => playHoverTick("far")}
-                    className="absolute left-6 sm:left-1/2 z-30 -translate-x-1/2 flex items-center justify-center cursor-pointer"
+                    key={item.id}
+                    className="absolute inset-x-0 flex items-center justify-center transition-all duration-300"
+                    style={{
+                      top: `${nodeY}px`,
+                      opacity,
+                      transform: `translateY(-50%) scale(${scale})`,
+                      pointerEvents: isCurrent ? "auto" : "none",
+                    }}
                   >
-                    {isCurrent && (
-                      <div className="absolute -inset-2.5 rounded-full bg-[#8B5CF6]/30 blur-md animate-pulse pointer-events-none" />
-                    )}
-                    <span
-                      className={`size-3 rounded-full border transition-all duration-300 ${
-                        isCurrent
-                          ? "border-white bg-[#8B5CF6] shadow-[0_0_12px_#8B5CF6] scale-110"
-                          : i < activeIndex
-                          ? "border-[#8B5CF6] bg-[#8B5CF6]/70"
-                          : "border-white/20 bg-[#090A0F]"
-                      }`}
-                    />
-                  </div>
-
-                  {/* Horizontal Beam Connector */}
-                  <div
-                    className={`hidden sm:block absolute top-1/2 -translate-y-1/2 z-20 h-0.5 bg-[#8B5CF6] shadow-[0_0_10px_#8B5CF6] transition-all duration-300 ${
-                      isLeft ? "right-1/2 origin-right" : "left-1/2 origin-left"
-                    } ${isCurrent ? "w-16 opacity-100" : "w-0 opacity-0"}`}
-                  />
-
-                  {/* Alternating Experience Card */}
-                  <div
-                    className={`w-full grid grid-cols-1 pl-14 sm:grid-cols-2 sm:pl-0 items-center ${
-                      isLeft ? "sm:text-right" : "sm:text-left"
-                    }`}
-                  >
+                    {/* Timeline Node Stop */}
                     <div
-                      className={`flex items-center ${
-                        isLeft
-                          ? "sm:col-start-1 sm:justify-end sm:pr-16"
-                          : "sm:col-start-2 sm:justify-start sm:pl-16"
+                      onClick={() => jumpToIndex(i)}
+                      onMouseEnter={() => playHoverTick("far")}
+                      className="absolute left-6 sm:left-1/2 z-30 -translate-x-1/2 flex items-center justify-center cursor-pointer"
+                    >
+                      {isCurrent && (
+                        <div className="absolute -inset-2.5 rounded-full bg-[#8B5CF6]/30 blur-sm pointer-events-none" />
+                      )}
+                      <span
+                        className={`size-3 rounded-full border transition-all duration-300 ${
+                          isCurrent
+                            ? "border-white bg-[#8B5CF6] shadow-[0_0_12px_#8B5CF6] scale-125"
+                            : i < activeIndex
+                            ? "border-[#8B5CF6] bg-[#8B5CF6]/70"
+                            : "border-white/20 bg-[#090A0F]"
+                        }`}
+                      />
+                    </div>
+
+                    {/* Horizontal Connector Line */}
+                      <div
+                        className={`hidden sm:block absolute top-1/2 -translate-y-1/2 z-20 h-0.5 bg-[#8B5CF6] shadow-[0_0_8px_#8B5CF6] transition-all duration-300 ${
+                          isLeft ? "right-1/2 origin-right" : "left-1/2 origin-left"
+                        } ${isCurrent ? "w-14 opacity-100" : "w-0 opacity-0"}`}
+                      />
+
+                    {/* Alternating Experience Card */}
+                    <div
+                      className={`w-full grid grid-cols-1 pl-14 sm:grid-cols-2 sm:pl-0 items-center ${
+                        isLeft ? "sm:text-right" : "sm:text-left"
                       }`}
                     >
                       <div
-                        onClick={() => {
-                          playSelectPing(1.35);
-                          setActiveModalItem(item);
-                        }}
-                        onMouseEnter={() => {
-                          if (isCurrent) playHoverTick("near");
-                        }}
-                        tabIndex={isCurrent ? 0 : -1}
-                        role="button"
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter" || e.key === " ") {
-                            e.preventDefault();
-                            playSelectPing(1.35);
-                            setActiveModalItem(item);
-                          }
-                        }}
-                        className={`group w-full max-w-md rounded-2xl border p-6 backdrop-blur-xl transition-all duration-300 cursor-pointer ${
-                          isCurrent
-                            ? "border-white/20 bg-[#12131C]/90 shadow-[0_15px_40px_rgba(0,0,0,0.7)] hover:border-[#8B5CF6]/50 hover:bg-[#161824]"
-                            : "border-white/5 bg-white/[0.02]"
+                        className={`flex items-center ${
+                          isLeft
+                            ? "sm:col-start-1 sm:justify-end sm:pr-14"
+                            : "sm:col-start-2 sm:justify-start sm:pl-14"
                         }`}
                       >
                         <div
-                          className={`flex items-center gap-2.5 ${
-                            isLeft ? "sm:justify-end" : "sm:justify-start"
+                          onClick={() => {
+                            playSelectPing(1.35);
+                            setActiveModalItem(item);
+                          }}
+                          onMouseEnter={() => {
+                            if (isCurrent) playHoverTick("near");
+                          }}
+                          role="button"
+                          tabIndex={isCurrent ? 0 : -1}
+                          className={`group w-full max-w-md rounded-2xl border p-5 sm:p-6 transition-all duration-300 cursor-pointer ${
+                            isCurrent
+                              ? "border-white/20 bg-[#12131C] shadow-2xl hover:border-[#8B5CF6]/60 hover:bg-[#161824]"
+                              : "border-white/5 bg-white/[0.02]"
                           }`}
                         >
-                          <span className="rounded-full border border-[#8B5CF6]/30 bg-[#8B5CF6]/10 px-2.5 py-0.5 text-[11px] font-medium tracking-wide text-[#9B8AFB] font-[family-name:var(--font-inter)]">
-                            {item.badge}
-                          </span>
-                          <span className="text-xs text-zinc-400 font-[family-name:var(--font-inter)]">
-                            {item.period}
-                          </span>
-                        </div>
+                          <div
+                            className={`flex items-center gap-2.5 ${
+                              isLeft ? "sm:justify-end" : "sm:justify-start"
+                            }`}
+                          >
+                            <span className="rounded-full border border-[#8B5CF6]/30 bg-[#8B5CF6]/15 px-2.5 py-0.5 text-[11px] font-medium tracking-wide text-[#9B8AFB] font-[family-name:var(--font-inter)]">
+                              {item.badge}
+                            </span>
+                            <span className="text-xs text-zinc-400 font-[family-name:var(--font-inter)]">
+                              {item.period}
+                            </span>
+                          </div>
 
-                        <h3 className="mt-2 text-xl font-bold tracking-tight text-white group-hover:text-[#9B8AFB] transition-colors sm:text-2xl font-[family-name:var(--font-manrope)]">
-                          {item.role}
-                        </h3>
+                          <h3 className="mt-2 text-xl font-bold tracking-tight text-white group-hover:text-[#9B8AFB] transition-colors sm:text-2xl font-[family-name:var(--font-manrope)]">
+                            {item.role}
+                          </h3>
 
-                        <p className="mt-1 text-sm font-medium text-zinc-300 font-[family-name:var(--font-inter)]">
-                          {item.org}
-                        </p>
+                          <p className="mt-1 text-sm font-medium text-zinc-300 font-[family-name:var(--font-inter)]">
+                            {item.org}
+                          </p>
 
-                        <div
-                          className={`mt-4 pt-3 flex items-center justify-between text-xs text-zinc-400 group-hover:text-zinc-200 transition-colors font-[family-name:var(--font-inter)] ${
-                            isLeft ? "sm:flex-row-reverse" : ""
-                          }`}
-                        >
-                          <span>Click to inspect dossier</span>
-                          <ArrowUpRight className="size-3.5 text-[#8B5CF6] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                          <div
+                            className={`mt-4 pt-3 flex items-center justify-between text-xs text-zinc-400 group-hover:text-zinc-200 transition-colors font-[family-name:var(--font-inter)] ${
+                              isLeft ? "sm:flex-row-reverse" : ""
+                            }`}
+                          >
+                            <span>Click to inspect dossier</span>
+                            <ArrowUpRight className="size-3.5 text-[#8B5CF6] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </motion.div>
-
-        </div>
-
-        {/* Bottom Navigation Control Pill */}
-        <div className="relative z-30 flex shrink-0 items-center justify-center pb-2">
-          <button
-            onMouseEnter={() => playHoverTick("far")}
-            onClick={() => {
-              if (activeIndex >= N - 1) {
-                playSelectPing(1.4);
-                const el = containerRef.current;
-                if (!el) return;
-                const absoluteTop = el.getBoundingClientRect().top + window.scrollY;
-                smoothScrollTo(absoluteTop, 1200);
-                return;
-              }
-
-              if (!confirmSkip) {
-                playHoverTick("near");
-                setConfirmSkip(true);
-                if (confirmTimeoutRef.current) clearTimeout(confirmTimeoutRef.current);
-                confirmTimeoutRef.current = setTimeout(() => {
-                  setConfirmSkip(false);
-                }, 3000);
-              } else {
-                playSelectPing(1.2);
-                if (confirmTimeoutRef.current) clearTimeout(confirmTimeoutRef.current);
-                setConfirmSkip(false);
-
-                const projectsEl = document.getElementById("projects");
-                if (projectsEl) {
-                  const rect = projectsEl.getBoundingClientRect();
-                  smoothScrollTo(window.scrollY + rect.top, 950);
-                } else {
-                  const el = containerRef.current;
-                  if (!el) return;
-                  const rect = el.getBoundingClientRect();
-                  smoothScrollTo(window.scrollY + rect.bottom, 950);
-                }
-              }
-            }}
-            className={`group flex items-center gap-2 px-5 py-2 rounded-full border backdrop-blur-md text-xs font-[family-name:var(--font-inter)] transition-all duration-300 shadow-[0_4px_20px_rgba(0,0,0,0.5)] cursor-pointer ${
-              confirmSkip
-                ? "border-[#9B8AFB] bg-[#1a172c] text-white shadow-[0_0_15px_rgba(155,138,251,0.25)]"
-                : "border-white/10 bg-[#12131C]/80 hover:bg-[#161826] hover:border-[#8B5CF6]/40 text-zinc-300 hover:text-white"
-            }`}
-          >
-            {activeIndex >= N - 1 ? (
-              <>
-                <span>Back to Top of Timeline</span>
-                <ChevronUp className="size-3.5 text-[#9B8AFB] transition-transform duration-300 group-hover:-translate-y-0.5" />
-              </>
-            ) : confirmSkip ? (
-              <>
-                <span className="text-[#9B8AFB] font-medium">Click again to confirm skip</span>
-                <ChevronDown className="size-3.5 text-[#9B8AFB] animate-bounce" />
-              </>
-            ) : (
-              <>
-                <span>Skip to Projects</span>
-                <ChevronDown className="size-3.5 text-[#9B8AFB] transition-transform duration-300 group-hover:translate-y-0.5" />
-              </>
-            )}
-          </button>
-        </div>
-
-      </div>
-
-      {/* Slide-over Inspection Dossier Overlay */}
-      {activeModalItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-md">
-          <div
-            className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl border border-white/15 bg-gradient-to-b from-[#131520] via-[#0C0D14] to-[#090A0F] p-7 sm:p-10 text-white shadow-[0_25px_70px_rgba(0,0,0,0.9)] focus:outline-none"
-            tabIndex={-1}
-          >
-            {/* Modal Header */}
-            <div className="flex items-start justify-between gap-4 pb-6 border-b border-white/10">
-              <div className="space-y-1.5">
-                <div className="flex items-center gap-2 text-xs text-[#9B8AFB] font-[family-name:var(--font-inter)]">
-                  <span>{activeModalItem.badge}</span>
-                  <span className="text-zinc-600">·</span>
-                  <span className="text-zinc-400">{activeModalItem.period}</span>
-                </div>
-                <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white font-[family-name:var(--font-manrope)]">
-                  {activeModalItem.role}
-                </h3>
-                <p className="text-sm font-medium text-[#8B5CF6] font-[family-name:var(--font-inter)]">
-                  {activeModalItem.org}
-                </p>
-              </div>
-
-              <button
-                onClick={() => {
-                  playHoverTick("mid");
-                  setActiveModalItem(null);
-                }}
-                aria-label="Close details"
-                className="p-2 rounded-full border border-white/10 bg-white/[0.03] text-zinc-400 hover:text-white hover:border-white/20 transition-all cursor-pointer"
-              >
-                <X className="size-4" />
-              </button>
-            </div>
-
-            {/* Modal Body */}
-            <div className="mt-6 space-y-6 text-sm leading-relaxed font-light text-zinc-300 font-[family-name:var(--font-inter)]">
-              <div>
-                <p className="text-xs uppercase tracking-widest text-zinc-500 mb-2 font-medium">
-                  Summary
-                </p>
-                <p className="text-zinc-200 leading-relaxed">
-                  {activeModalItem.summary}
-                </p>
-              </div>
-
-              {activeModalItem.subTracks && (
-                <div className="space-y-3 pt-2">
-                  <p className="text-xs uppercase tracking-widest text-zinc-500 font-medium">
-                    Tenure Breakdown
-                  </p>
-                  <div className="space-y-2.5">
-                    {activeModalItem.subTracks.map((sub, sIdx) => (
-                      <div key={sIdx} className="p-3.5 rounded-xl border border-white/5 bg-white/[0.02] space-y-1">
-                        <div className="flex items-center justify-between text-xs">
-                          <span className="text-white font-semibold">{sub.title}</span>
-                          <span className="text-[#9B8AFB]">{sub.period}</span>
-                        </div>
-                        <p className="text-xs text-zinc-400 font-light">{sub.details}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              <div className="space-y-2.5 pt-2">
-                <p className="text-xs uppercase tracking-widest text-zinc-500 font-medium">
-                  Key Responsibilities
-                </p>
-                <ul className="space-y-2 text-xs text-zinc-300">
-                  {activeModalItem.responsibilities.map((resp, rIdx) => (
-                    <li key={rIdx} className="flex items-start gap-2.5">
-                      <span className="size-1 rounded-full bg-[#8B5CF6] mt-2 shrink-0" />
-                      <span>{resp}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="space-y-2.5 pt-2">
-                <p className="text-xs uppercase tracking-widest text-zinc-500 font-medium">
-                  Direct Contributions
-                </p>
-                <ul className="space-y-2 text-xs text-zinc-300">
-                  {activeModalItem.contributions.map((con, cIdx) => (
-                    <li key={cIdx} className="flex items-start gap-2.5">
-                      <span className="size-1 rounded-full bg-[#9B8AFB] mt-2 shrink-0" />
-                      <span>{con}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="space-y-2.5 pt-2">
-                <p className="text-xs uppercase tracking-widest text-zinc-500 font-medium">
-                  Documented Outcomes
-                </p>
-                <ul className="space-y-2 text-xs text-zinc-300">
-                  {activeModalItem.outcomes.map((out, oIdx) => (
-                    <li key={oIdx} className="flex items-start gap-2.5">
-                      <CheckCircle2 className="size-3.5 text-[#8B5CF6] mt-0.5 shrink-0" />
-                      <span>{out}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            {/* Modal Footer */}
-            <div className="mt-8 pt-6 flex items-center justify-between text-xs text-zinc-500 font-[family-name:var(--font-inter)]">
-              <span>Press Escape or click close to dismiss</span>
-              <button
-                onClick={() => {
-                  playHoverTick("mid");
-                  setActiveModalItem(null);
-                }}
-                className="px-4 py-2 rounded-full border border-white/15 bg-white/[0.04] text-white hover:bg-white/[0.08] transition-colors cursor-pointer"
-              >
-                Close
-              </button>
-            </div>
-
+                );
+              })}
+            </motion.div>
           </div>
+
+          {/* Bottom Navigation Control Pill */}
+          <div className="relative z-30 flex shrink-0 items-center justify-center pb-2">
+            <button
+              onMouseEnter={() => playHoverTick("far")}
+              onClick={() => {
+                if (activeIndex >= N - 1) {
+                  playSelectPing(1.4);
+                  jumpToIndex(0);
+                  return;
+                }
+
+                if (!confirmSkip) {
+                  playHoverTick("near");
+                  setConfirmSkip(true);
+                  if (confirmTimeoutRef.current) clearTimeout(confirmTimeoutRef.current);
+                  confirmTimeoutRef.current = setTimeout(() => {
+                    setConfirmSkip(false);
+                  }, 3000);
+                } else {
+                  playSelectPing(1.2);
+                  if (confirmTimeoutRef.current) clearTimeout(confirmTimeoutRef.current);
+                  setConfirmSkip(false);
+
+                  const projectsEl = document.getElementById("projects");
+                  if (projectsEl) {
+                    projectsEl.scrollIntoView({ behavior: "smooth" });
+                  }
+                }
+              }}
+              className={`group flex items-center gap-2 px-5 py-2 rounded-full border text-xs font-[family-name:var(--font-inter)] transition-all duration-300 shadow-lg cursor-pointer ${
+                confirmSkip
+                  ? "border-[#9B8AFB] bg-[#1a172c] text-white shadow-[#9B8AFB]/20"
+                  : "border-white/10 bg-[#12131C] hover:bg-[#161826] hover:border-[#8B5CF6]/40 text-zinc-300 hover:text-white"
+              }`}
+            >
+              {activeIndex >= N - 1 ? (
+                <>
+                  <span>Back to Top of Timeline</span>
+                  <ChevronUp className="size-3.5 text-[#9B8AFB] transition-transform duration-300 group-hover:-translate-y-0.5" />
+                </>
+              ) : confirmSkip ? (
+                <>
+                  <span className="text-[#9B8AFB] font-medium">Click again to confirm skip</span>
+                  <ChevronDown className="size-3.5 text-[#9B8AFB] animate-bounce" />
+                </>
+              ) : (
+                <>
+                  <span>Skip to Projects</span>
+                  <ChevronDown className="size-3.5 text-[#9B8AFB] transition-transform duration-300 group-hover:translate-y-0.5" />
+                </>
+              )}
+            </button>
+          </div>
+
         </div>
-      )}
-    </section>
+      </section>
+
+      {/* Slide-over Inspection Dossier Overlay: Placed outside <section> at root level */}
+      <AnimatePresence>
+        {activeModalItem && (
+          <div
+            onClick={() => setActiveModalItem(null)}
+            className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-sm"
+          >
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl border border-white/15 bg-[#0E1018] p-7 sm:p-10 text-white shadow-2xl focus:outline-none"
+              tabIndex={-1}
+            >
+              {/* Modal Header */}
+              <div className="flex items-start justify-between gap-4 pb-6 border-b border-white/10">
+                <div className="space-y-1.5">
+                  <div className="flex items-center gap-2 text-xs text-[#9B8AFB] font-[family-name:var(--font-inter)]">
+                    <span>{activeModalItem.badge}</span>
+                    <span className="text-zinc-600">·</span>
+                    <span className="text-zinc-400">{activeModalItem.period}</span>
+                  </div>
+                  <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white font-[family-name:var(--font-manrope)]">
+                    {activeModalItem.role}
+                  </h3>
+                  <p className="text-sm font-medium text-[#8B5CF6] font-[family-name:var(--font-inter)]">
+                    {activeModalItem.org}
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => {
+                    playHoverTick("mid");
+                    setActiveModalItem(null);
+                  }}
+                  aria-label="Close details"
+                  className="p-2 rounded-full border border-white/10 bg-white/[0.03] text-zinc-400 hover:text-white hover:border-white/20 transition-all cursor-pointer"
+                >
+                  <X className="size-4" />
+                </button>
+              </div>
+
+              {/* Modal Body */}
+              <div className="mt-6 space-y-6 text-sm leading-relaxed font-light text-zinc-300 font-[family-name:var(--font-inter)]">
+                <div>
+                  <p className="text-xs uppercase tracking-widest text-zinc-500 mb-2 font-medium">
+                    Summary
+                  </p>
+                  <p className="text-zinc-200 leading-relaxed">
+                    {activeModalItem.summary}
+                  </p>
+                </div>
+
+                {activeModalItem.subTracks && (
+                  <div className="space-y-3 pt-2">
+                    <p className="text-xs uppercase tracking-widest text-zinc-500 font-medium">
+                      Tenure Breakdown
+                    </p>
+                    <div className="space-y-2.5">
+                      {activeModalItem.subTracks.map((sub, sIdx) => (
+                        <div key={sIdx} className="p-3.5 rounded-xl border border-white/5 bg-white/[0.02] space-y-1">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-white font-semibold">{sub.title}</span>
+                            <span className="text-[#9B8AFB]">{sub.period}</span>
+                          </div>
+                          <p className="text-xs text-zinc-400 font-light">{sub.details}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="space-y-2.5 pt-2">
+                  <p className="text-xs uppercase tracking-widest text-zinc-500 font-medium">
+                    Key Responsibilities
+                  </p>
+                  <ul className="space-y-2 text-xs text-zinc-300">
+                    {activeModalItem.responsibilities.map((resp, rIdx) => (
+                      <li key={rIdx} className="flex items-start gap-2.5">
+                        <span className="size-1 rounded-full bg-[#8B5CF6] mt-2 shrink-0" />
+                        <span>{resp}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="space-y-2.5 pt-2">
+                  <p className="text-xs uppercase tracking-widest text-zinc-500 font-medium">
+                    Direct Contributions
+                  </p>
+                  <ul className="space-y-2 text-xs text-zinc-300">
+                    {activeModalItem.contributions.map((con, cIdx) => (
+                      <li key={cIdx} className="flex items-start gap-2.5">
+                        <span className="size-1 rounded-full bg-[#9B8AFB] mt-2 shrink-0" />
+                        <span>{con}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="space-y-2.5 pt-2">
+                  <p className="text-xs uppercase tracking-widest text-zinc-500 font-medium">
+                    Documented Outcomes
+                  </p>
+                  <ul className="space-y-2 text-xs text-zinc-300">
+                    {activeModalItem.outcomes.map((out, oIdx) => (
+                      <li key={oIdx} className="flex items-start gap-2.5">
+                        <CheckCircle2 className="size-3.5 text-[#8B5CF6] mt-0.5 shrink-0" />
+                        <span>{out}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              {/* Modal Footer */}
+              <div className="mt-8 pt-6 flex items-center justify-between text-xs text-zinc-500 font-[family-name:var(--font-inter)]">
+                <span>Press Escape or click outside to dismiss</span>
+                <button
+                  onClick={() => {
+                    playHoverTick("mid");
+                    setActiveModalItem(null);
+                  }}
+                  className="px-4 py-2 rounded-full border border-white/15 bg-white/[0.04] text-white hover:bg-white/[0.08] transition-colors cursor-pointer"
+                >
+                  Close
+                </button>
+              </div>
+
+            </div>
+          </div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
