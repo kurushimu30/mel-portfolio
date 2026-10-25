@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence, type Variants } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { useSoundEffects } from "@/hooks/useSoundEffects";
 import { Compass, Cpu, Layers, Sparkles, Award } from "lucide-react";
 
@@ -42,44 +42,37 @@ interface MosaicCard {
   imgClass?: string;
 }
 
-// Full 6-Card Mosaic Restored (including PGDX Code White booth)
 const MOSAIC: MosaicCard[] = [
-  // 1. Large Left Card: HackManila Community
   {
     src: "/about/hackmanila.jpg",
     alt: "HackManila Builder Community",
     cls: "col-start-1 col-span-4 row-span-2",
     imgClass: "object-cover object-center",
   },
-  // 2. Col 2 Top: IoT Breakout Session
   {
     src: "/about/IoTSpeakership.jpg",
     alt: "IoT Philippines Breakout Session",
     cls: "col-start-5 col-span-2",
     imgClass: "object-cover object-center",
   },
-  // 3. Col 3 Top: PGDX Code White Booth (WIDE BANNER - All 4 visible!)
   {
     src: "/about/pgdxbooth.jpg",
     alt: "ARK Studio PGDX Booth Showcase",
     cls: "col-start-7 col-span-4",
     imgClass: "object-cover object-[center_60%]",
   },
-  // 4. Far Right Tall Column: DEVCON Speaking 
   {
     src: "/about/devcon.JPG",
     alt: "DEVCON Manila Keynote Session",
     cls: "col-start-11 col-span-2 row-span-2",
     imgClass: "object-cover object-[65%_30%]",
   },
-  // 5. Col 2 Bottom: PBW Booth Squad
   {
     src: "/about/pbwbooth.jpg",
     alt: "Philippine Blockchain Week Booth",
     cls: "col-start-5 col-span-3",
     imgClass: "object-cover object-center",
   },
-  // 6. Col 3 Bottom: CCIS Game Jam Lab
   {
     src: "/about/CCISGameJam.jpg",
     alt: "CCIS Game Jam Participants",
@@ -93,20 +86,19 @@ const containerVariants: Variants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.16,
-      delayChildren: 0.1,
+      staggerChildren: 0.08,
+      delayChildren: 0.05,
     },
   },
 };
 
 const gentleItemVariants: Variants = {
-  hidden: { opacity: 0, y: 28, filter: "blur(10px)" },
+  hidden: { opacity: 0, y: 16 },
   visible: {
     opacity: 1,
     y: 0,
-    filter: "blur(0px)",
     transition: {
-      duration: 1.15,
+      duration: 0.6,
       ease: smoothCinemaEase,
     },
   },
@@ -118,25 +110,23 @@ export default function About() {
 
   return (
     <section id="about" className="relative w-full overflow-hidden bg-transparent text-white py-28 sm:py-36">
-      {/* Ambient Luminescence */}
-      <div className="pointer-events-none absolute top-1/4 left-10 w-[700px] h-[400px] rounded-full bg-[#8B5CF6]/5 blur-[170px]" />
-      <div className="pointer-events-none absolute bottom-1/3 right-10 w-[600px] h-[350px] rounded-full bg-[#43C6C5]/5 blur-[170px]" />
+      {/* Ambient Luminescence: replaced 170px blur with hardware-composited blur-3xl */}
+      <div className="pointer-events-none absolute top-1/4 left-10 w-[600px] h-[350px] rounded-full bg-[#8B5CF6]/5 blur-3xl transform-gpu" />
+      <div className="pointer-events-none absolute bottom-1/3 right-10 w-[500px] h-[300px] rounded-full bg-[#43C6C5]/5 blur-3xl transform-gpu" />
 
       <div className="mx-auto max-w-[1440px] px-6 sm:px-12 lg:px-20 relative z-10 space-y-28">
         
-        {/*  
-            01 — INTRODUCTION (Personal Narrative & Proof Line)
-              */}
+        {/* 01 — INTRODUCTION */}
         <div className="grid items-center gap-12 lg:gap-16 lg:grid-cols-[1.15fr_0.85fr]">
           <motion.div
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
+            viewport={{ once: true, amount: 0.15 }}
             className="space-y-6"
           >
             {/* Header Badge */}
-            <motion.div variants={gentleItemVariants} className="flex items-center gap-2">
+            <motion.div variants={gentleItemVariants} className="flex items-center gap-2 transform-gpu">
               <span className="size-1.5 rounded-full bg-[#8B5CF6] shadow-[0_0_8px_#8B5CF6]" />
               <p className="text-xs uppercase font-medium tracking-[0.25em] text-[#9B8AFB] font-[family-name:var(--font-inter)]">
                 Personal Background
@@ -146,7 +136,7 @@ export default function About() {
             {/* Headline */}
             <motion.h2
               variants={gentleItemVariants}
-              className="text-4xl sm:text-5xl lg:text-6xl font-extrabold uppercase leading-[1.05] tracking-tight font-[family-name:var(--font-manrope)]"
+              className="text-4xl sm:text-5xl lg:text-6xl font-extrabold uppercase leading-[1.05] tracking-tight font-[family-name:var(--font-manrope)] transform-gpu"
             >
               I build across code, <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-zinc-200 to-zinc-400">
@@ -155,7 +145,7 @@ export default function About() {
             </motion.h2>
 
             {/* Narrative Arc */}
-            <motion.div variants={gentleItemVariants} className="space-y-4 text-zinc-300 font-light text-sm sm:text-base leading-relaxed font-[family-name:var(--font-inter)] max-w-2xl">
+            <motion.div variants={gentleItemVariants} className="space-y-4 text-zinc-300 font-light text-sm sm:text-base leading-relaxed font-[family-name:var(--font-inter)] max-w-2xl transform-gpu">
               <p>
                 I&apos;m Mel Carl Chacon, a BSIT student at the Polytechnic University of the Philippines. Beyond the classroom, I&apos;ve worked across software and game development, led student initiatives, coordinated collaborative projects, and founded ARK to help aspiring game developers find people to build with and opportunities to put their skills into practice.
               </p>
@@ -167,7 +157,7 @@ export default function About() {
             {/* Compact Milestones Proof Strip */}
             <motion.div
               variants={gentleItemVariants}
-              className="flex items-start gap-3 p-4 rounded-xl border border-white/10 bg-white/[0.02] backdrop-blur-sm max-w-2xl"
+              className="flex items-start gap-3 p-4 rounded-xl border border-white/10 bg-white/[0.02] max-w-2xl transform-gpu"
             >
               <Award className="size-4 text-[#9B8AFB] shrink-0 mt-0.5" />
               <p className="text-xs sm:text-sm text-zinc-300 font-mono leading-relaxed">
@@ -176,27 +166,23 @@ export default function About() {
             </motion.div>
           </motion.div>
 
-          {/* Right: Living Desk Viewport */}
+          {/* Right: Living Desk Viewport (Pure GPU scale/fade, static render) */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
-            whileInView={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 1.3, ease: smoothCinemaEase, delay: 0.2 }}
-            className="relative w-full h-[380px] sm:h-[460px] lg:h-[500px] rounded-3xl overflow-hidden select-none pointer-events-none border border-white/10 bg-[#12131C]"
+            initial={{ opacity: 0, scale: 0.96 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, amount: 0.15 }}
+            transition={{ duration: 0.65, ease: smoothCinemaEase }}
+            className="relative w-full h-[380px] sm:h-[460px] lg:h-[500px] rounded-3xl overflow-hidden select-none pointer-events-none border border-white/10 bg-[#12131C] transform-gpu will-change-transform"
           >
-            <motion.div
-              animate={{ y: [0, -6, 0] }}
-              transition={{ repeat: Infinity, duration: 9, ease: "easeInOut" }}
-              className="relative w-full h-full"
-            >
+            <div className="relative w-full h-full">
               <Image
-                src="/about-desk.svg"
+                src="/about-desk.jpg"
                 alt="Personal workspace and systems setup"
                 fill
                 priority
                 className="object-cover object-center"
               />
-            </motion.div>
+            </div>
 
             {/* Reticle Corner Brackets */}
             <div className="absolute top-4 left-4 size-3 border-t border-l border-[#8B5CF6]/60" />
@@ -212,19 +198,17 @@ export default function About() {
           </motion.div>
         </div>
 
-        {/*  
-            02 — PHILOSOPHY & ANIMATED PILLARS
-              */}
+        {/* 02 — PHILOSOPHY & ANIMATED PILLARS */}
         <div className="pt-8 border-t border-white/10 space-y-12">
-          {/* Animated Philosophy Stage Card */}
+          {/* Philosophy Stage Card */}
           <motion.div
-            initial={{ opacity: 0, y: 35, filter: "blur(8px)" }}
-            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 1.25, ease: smoothCinemaEase }}
-            className="relative rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.03] to-white/[0.005] p-8 sm:p-12 lg:p-14 overflow-hidden"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.15 }}
+            transition={{ duration: 0.6, ease: smoothCinemaEase }}
+            className="relative rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.03] to-white/[0.005] p-8 sm:p-12 lg:p-14 overflow-hidden transform-gpu"
           >
-            <div className="pointer-events-none absolute -top-24 -right-24 w-96 h-96 rounded-full bg-[#9B8AFB]/10 blur-[120px]" />
+            <div className="pointer-events-none absolute -top-24 -right-24 w-80 h-80 rounded-full bg-[#9B8AFB]/10 blur-3xl transform-gpu" />
 
             <div className="relative z-10 max-w-3xl space-y-6">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#8B5CF6]/30 bg-[#8B5CF6]/10 text-xs font-mono text-[#9B8AFB]">
@@ -233,11 +217,11 @@ export default function About() {
               </div>
 
               <motion.h3
-                initial={{ opacity: 0, y: 16 }}
+                initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 1.1, delay: 0.15, ease: smoothCinemaEase }}
-                className="text-2xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight font-[family-name:var(--font-manrope)] leading-tight text-white"
+                transition={{ duration: 0.5, delay: 0.1, ease: smoothCinemaEase }}
+                className="text-2xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight font-[family-name:var(--font-manrope)] leading-tight text-white transform-gpu"
               >
                 Curiosity is where I start. <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9B8AFB] via-zinc-200 to-[#43C6C5]">
@@ -246,11 +230,11 @@ export default function About() {
               </motion.h3>
 
               <motion.div
-                initial={{ opacity: 0, y: 16 }}
+                initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 1.1, delay: 0.25, ease: smoothCinemaEase }}
-                className="space-y-4 text-sm sm:text-base text-zinc-300 font-light leading-relaxed font-[family-name:var(--font-inter)]"
+                transition={{ duration: 0.5, delay: 0.15, ease: smoothCinemaEase }}
+                className="space-y-4 text-sm sm:text-base text-zinc-300 font-light leading-relaxed font-[family-name:var(--font-inter)] transform-gpu"
               >
                 <p>
                   I&apos;m drawn to unfamiliar problems, ideas that can be taken further, and the challenge of figuring out how different pieces fit together. Whether I&apos;m writing code, developing a game, organizing a team, or shaping a community, I learn by exploring, experimenting, and turning what I discover into something tangible.
@@ -262,7 +246,7 @@ export default function About() {
             </div>
           </motion.div>
 
-          {/* Animated Three Pillars */}
+          {/* Pillars List */}
           <div className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2">
               <span className="text-xs uppercase font-mono tracking-widest text-zinc-500">
@@ -276,14 +260,14 @@ export default function About() {
             <motion.div 
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: true, amount: 0.2 }}
+              viewport={{ once: true, amount: 0.15 }}
               variants={{
                 hidden: { opacity: 0 },
                 visible: {
                   opacity: 1,
                   transition: {
-                    staggerChildren: 0.12,
-                    delayChildren: 0.1,
+                    staggerChildren: 0.08,
+                    delayChildren: 0.05,
                   },
                 },
               }}
@@ -296,20 +280,19 @@ export default function About() {
                   <motion.div
                     key={pillar.id}
                     variants={{
-                      hidden: { opacity: 0, y: 24, scale: 0.96, filter: "blur(6px)" },
+                      hidden: { opacity: 0, y: 16, scale: 0.97 },
                       visible: {
                         opacity: 1,
                         y: 0,
                         scale: 1,
-                        filter: "blur(0px)",
                         transition: {
-                          duration: 0.9,
+                          duration: 0.5,
                           ease: smoothCinemaEase,
                         },
                       },
                     }}
-                    whileHover={{ y: -4, transition: { duration: 0.3 } }}
-                    className="h-full"
+                    whileHover={{ y: -3, transition: { duration: 0.2 } }}
+                    className="h-full transform-gpu"
                   >
                     <button
                       onClick={() => {
@@ -317,23 +300,23 @@ export default function About() {
                         setActivePillar(idx);
                       }}
                       onMouseEnter={() => playHoverTick("far")}
-                      className={`w-full h-full text-left p-6 rounded-2xl border transition-all duration-500 cursor-pointer flex flex-col justify-between space-y-4 relative overflow-hidden group ${
+                      className={`w-full h-full text-left p-6 rounded-2xl border transition-all duration-300 cursor-pointer flex flex-col justify-between space-y-4 relative overflow-hidden group ${
                         isActive
-                          ? "border-[#8B5CF6] bg-white/[0.04] shadow-[0_0_30px_rgba(139,92,246,0.18)]"
+                          ? "border-[#8B5CF6] bg-white/[0.04] shadow-[0_0_24px_rgba(139,92,246,0.15)]"
                           : "border-white/10 bg-white/[0.01] hover:border-white/25 hover:bg-white/[0.02]"
                       }`}
                     >
                       {isActive && (
                         <motion.div
                           layoutId="pillarGlow"
-                          className="pointer-events-none absolute -top-12 -right-12 size-28 rounded-full bg-[#8B5CF6]/20 blur-2xl"
-                          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                          className="pointer-events-none absolute -top-12 -right-12 size-28 rounded-full bg-[#8B5CF6]/20 blur-xl"
+                          transition={{ type: "spring", stiffness: 350, damping: 30 }}
                         />
                       )}
 
                       <div className="flex items-center justify-between relative z-10">
                         <div
-                          className="p-2.5 rounded-xl border border-white/10 bg-white/[0.02] transition-transform duration-300 group-hover:scale-110"
+                          className="p-2.5 rounded-xl border border-white/10 bg-white/[0.02] transition-transform duration-300 group-hover:scale-105"
                           style={{ color: pillar.accent }}
                         >
                           <Icon className="size-5" />
@@ -363,19 +346,16 @@ export default function About() {
           </div>
         </div>
 
-        {/*  
-            03 — STATEMENT & FIELD EVIDENCE (Restored 6-card mosaic + Original Tagline)
-              */}
+        {/* 03 — STATEMENT & FIELD EVIDENCE */}
         <div className="pt-12 border-t border-white/10 space-y-8">
           <div className="grid items-center gap-10 lg:grid-cols-[0.8fr_1.2fr]">
             
-            {/* Original Headline Preserved */}
             <motion.h3
-              initial={{ opacity: 0, y: 28, filter: "blur(8px)" }}
-              whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              viewport={{ once: true, amount: 0.25 }}
-              transition={{ duration: 1.2, ease: smoothCinemaEase }}
-              className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-[1.08] tracking-tight font-[family-name:var(--font-manrope)]"
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.5, ease: smoothCinemaEase }}
+              className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-[1.08] tracking-tight font-[family-name:var(--font-manrope)] transform-gpu"
             >
               I&apos;m not just building projects.{" "}
               <span className="text-[#9B8AFB] block mt-1.5">
@@ -383,26 +363,49 @@ export default function About() {
               </span>
             </motion.h3>
 
-            {/* Restored 6-Card Mosaic Matrix */}
-            <div className="grid h-[240px] sm:h-[300px] grid-cols-12 grid-rows-2 gap-3">
+            {/* Synchronized Unified Grid Entrance */}
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+              variants={{
+                hidden: { opacity: 0, y: 20, scale: 0.98 },
+                visible: {
+                  opacity: 1,
+                  y: 0,
+                  scale: 1,
+                  transition: {
+                    duration: 0.55,
+                    ease: smoothCinemaEase,
+                    // Tight micro-stagger: feels simultaneous and intentional, not staggered or pop-in
+                    staggerChildren: 0.03,
+                  },
+                },
+              }}
+              style={{ contain: "paint layout" }}
+              className="grid h-[240px] sm:h-[300px] grid-cols-12 grid-rows-2 gap-3 transform-gpu"
+            >
               {MOSAIC.map((card, i) => (
                 <motion.div
                   key={i}
-                  onMouseEnter={() => playHoverTick("far")}
-                  initial={{ opacity: 0, scale: 0.94, filter: "blur(6px)" }}
-                  whileInView={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                  viewport={{ once: true, amount: 0.15 }}
-                  transition={{
-                    duration: 0.85,
-                    delay: 0.08 * i,
-                    ease: smoothCinemaEase,
+                  variants={{
+                    hidden: { opacity: 0, scale: 0.96 },
+                    visible: {
+                      opacity: 1,
+                      scale: 1,
+                      transition: { duration: 0.4, ease: smoothCinemaEase },
+                    },
                   }}
-                  className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-[#12131C] hover:border-[#8B5CF6]/50 transition-all duration-500 ${card.cls}`}
+                  onMouseEnter={() => playHoverTick("far")}
+                  className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-[#12131C] hover:border-[#8B5CF6]/50 transition-colors duration-200 transform-gpu ${card.cls}`}
                 >
+                  {/* Hardware-Composited Image */}
                   <img
                     src={card.src}
                     alt={card.alt}
-                    className={`size-full grayscale contrast-125 opacity-70 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 ${
+                    loading="lazy"
+                    decoding="async"
+                    className={`size-full opacity-65 group-hover:opacity-100 group-hover:scale-105 transition-transform transition-opacity duration-300 ease-out transform-gpu will-change-transform ${
                       card.imgClass || "object-cover object-center"
                     }`}
                     onError={(e) => {
@@ -410,12 +413,11 @@ export default function About() {
                     }}
                   />
 
-                  {/* Depth Vignettes */}
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#090A0F]/70 via-transparent to-transparent opacity-80 group-hover:opacity-30 transition-opacity duration-500" />
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#8B5CF6]/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  {/* Unified Vignette Layer */}
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#090A0F]/80 via-transparent to-transparent opacity-80 group-hover:opacity-20 transition-opacity duration-300" />
                 </motion.div>
               ))}
-            </div>
+            </motion.div>
 
           </div>
         </div>
