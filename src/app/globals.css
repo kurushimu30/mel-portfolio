@@ -40,6 +40,82 @@
   }
 }
 
+@keyframes heroFloatA {
+  0%, 100% {
+    transform: translate3d(0, 0px, 0);
+  }
+  50% {
+    transform: translate3d(0, -8px, 0);
+  }
+}
+
+@keyframes heroFloatB {
+  0%, 100% {
+    transform: translate3d(0, 0px, 0);
+  }
+  50% {
+    transform: translate3d(0, -6px, 0);
+  }
+}
+
+@keyframes heroFloatC {
+  0%, 100% {
+    transform: translate3d(0, 0px, 0);
+  }
+  50% {
+    transform: translate3d(0, -7px, 0);
+  }
+}
+
+.animate-float-a {
+  animation: heroFloatA 5.4s ease-in-out infinite both;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
+}
+
+.animate-float-b {
+  animation: heroFloatB 6.2s ease-in-out infinite 0.4s both;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
+}
+
+.animate-float-c {
+  animation: heroFloatC 5.8s ease-in-out infinite 0.8s both;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Hero Medallion Floating Keyframes */
+@keyframes heroAwardFloatA {
+  0%, 100% {
+    transform: translate3d(0, 0px, 0);
+  }
+  50% {
+    transform: translate3d(0, -8px, 0);
+  }
+}
+
+@keyframes heroAwardFloatB {
+  0%, 100% {
+    transform: translate3d(0, 0px, 0);
+  }
+  50% {
+    transform: translate3d(0, -6px, 0);
+  }
+}
+
+@keyframes heroAwardFloatC {
+  0%, 100% {
+    transform: translate3d(0, 0px, 0);
+  }
+  50% {
+    transform: translate3d(0, -7px, 0);
+  }
+}
+
 .ambient-glow, .bg-mesh {
   pointer-events: none;
   will-change: auto; /* Don't force excessive layer allocation */

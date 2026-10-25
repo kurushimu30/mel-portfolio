@@ -43,19 +43,18 @@ export default function Hero() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.12,
-        delayChildren: 0.7,
+        staggerChildren: 0.1,
+        delayChildren: 0.4,
       },
     },
   };
 
   const grandItemFadeUp = {
-    hidden: { opacity: 0, y: 28, filter: "blur(8px)" },
+    hidden: { opacity: 0, y: 20 },
     visible: {
       opacity: 1,
       y: 0,
-      filter: "blur(0px)",
-      transition: { duration: 0.9, ease: cinemaTransit },
+      transition: { duration: 0.8, ease: cinemaTransit },
     },
   };
 
@@ -67,8 +66,9 @@ export default function Hero() {
       detail: "100 Brightest Minds of the PH",
       icon: Award,
       accent: "#9B8AFB",
-      floatDuration: 5.4,
-      floatOffset: -8,
+      animationName: "heroAwardFloatA",
+      duration: "5.4s",
+      delay: "0s",
       alignOffsetClass: "translate-x-3 xl:translate-x-6",
     },
     {
@@ -78,8 +78,9 @@ export default function Hero() {
       detail: "Code White Flagship Showcase",
       icon: Gamepad2,
       accent: "#43C6C5",
-      floatDuration: 6.2,
-      floatOffset: -6,
+      animationName: "heroAwardFloatB",
+      duration: "6.2s",
+      delay: "0.4s",
       alignOffsetClass: "-translate-x-6 xl:-translate-x-10 scale-105",
     },
     {
@@ -89,8 +90,9 @@ export default function Hero() {
       detail: "Top 15 Finalist Across PH",
       icon: Trophy,
       accent: "#FFFFFF",
-      floatDuration: 5.8,
-      floatOffset: -7,
+      animationName: "heroAwardFloatC",
+      duration: "5.8s",
+      delay: "0.8s",
       alignOffsetClass: "translate-x-1 xl:translate-x-2",
     },
   ];
@@ -98,18 +100,20 @@ export default function Hero() {
   return (
     <section
       ref={sectionRef}
+      id="hero"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       className="relative w-full min-h-[750px] h-[100dvh] bg-transparent overflow-hidden flex items-end justify-center select-none"
     >
+
       {/* Ambient Atmospheric Glow */}
-      <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[750px] sm:w-[950px] h-[750px] sm:h-[950px] rounded-full bg-gradient-to-tr from-[#9B8AFB]/10 via-[#43C6C5]/5 to-transparent blur-[140px] z-0" />
+      <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[750px] sm:w-[950px] h-[750px] sm:h-[950px] rounded-full bg-gradient-to-tr from-[#9B8AFB]/10 via-[#43C6C5]/5 to-transparent blur-3xl z-0 transform-gpu" />
 
       {/* Layer 1: Background Wordmark */}
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 0.75, scale: 0.8 }}
-        transition={{ duration: 2.2, ease: cinemaTransit, delay: 0.1 }}
+        transition={{ duration: 1.8, ease: cinemaTransit, delay: 0.1 }}
         className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none select-none"
       >
         <div className="relative w-full h-full max-h-[80vh] flex items-center justify-center">
@@ -128,18 +132,14 @@ export default function Hero() {
         style={{ x: glyphX, y: glyphY }}
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1.8, ease: cinemaTransit, delay: 0.3 }}
+        transition={{ duration: 1.5, ease: cinemaTransit, delay: 0.2 }}
         className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none"
       >
-        <motion.div
-          animate={{
-            rotate: [0, 1.5, -1.5, 0],
-            scale: [1, 1.015, 1],
-          }}
-          transition={{
-            repeat: Infinity,
-            duration: 14,
-            ease: "easeInOut",
+        <div
+          style={{
+            animation: "heroAwardFloatB 14s ease-in-out infinite",
+            backfaceVisibility: "hidden",
+            WebkitBackfaceVisibility: "hidden",
           }}
           className="relative w-[550px] sm:w-[750px] lg:w-[900px] xl:w-[980px] aspect-square"
         >
@@ -150,20 +150,23 @@ export default function Hero() {
             priority
             className="object-contain drop-shadow-[0_0_50px_rgba(67,198,197,0.15)]"
           />
-        </motion.div>
+        </div>
       </motion.div>
 
       {/* Layer 3: Portrait (Height-anchored, zoom-resilient) */}
       <motion.div
         style={{ x: portraitX }}
-        initial={{ opacity: 0, y: 60, scale: 0.98 }}
+        initial={{ opacity: 0, y: 40, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 1.6, ease: cinemaTransit, delay: 0.45 }}
+        transition={{ duration: 1.2, ease: cinemaTransit, delay: 0.3 }}
         className="absolute inset-x-0 bottom-0 z-20 flex justify-center pointer-events-none transform-gpu h-[78vh] sm:h-[86vh] lg:h-[92vh] xl:h-[95vh]"
       >
-        <motion.div
-          animate={{ y: [0, -6, 0] }}
-          transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
+        <div
+          style={{
+            animation: "heroAwardFloatA 6s ease-in-out infinite",
+            backfaceVisibility: "hidden",
+            WebkitBackfaceVisibility: "hidden",
+          }}
           className="relative w-full max-w-[850px] lg:max-w-[800px] xl:max-w-[950px] h-full"
         >
           <Image
@@ -174,7 +177,7 @@ export default function Hero() {
             unoptimized
             className="object-contain object-bottom drop-shadow-[0_20px_50px_rgba(0,0,0,0.9)]"
           />
-        </motion.div>
+        </div>
       </motion.div>
 
       {/* Layer 4: Text UI & Actions Container */}
@@ -183,7 +186,7 @@ export default function Hero() {
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col md:flex-row md:items-center justify-between gap-10 my-auto">
           
-          {/* Left Block: Grand Scaled Text Hierarchy */}
+          {/* Left Block: Text Hierarchy */}
           <motion.div
             style={{ x: textX }}
             variants={textContainerVariants}
@@ -200,7 +203,7 @@ export default function Hero() {
                   rotate: -3,
                   scale: 1,
                   y: 0,
-                  transition: { duration: 0.9, ease: cinemaTransit },
+                  transition: { duration: 0.8, ease: cinemaTransit },
                 },
               }}
               className="font-[family-name:var(--font-handwriting)] text-5xl sm:text-6xl lg:text-7xl text-zinc-300 origin-left inline-block"
@@ -211,13 +214,12 @@ export default function Hero() {
             {/* Display Name */}
             <motion.h1
               variants={{
-                hidden: { opacity: 0, y: 35, scale: 0.96, filter: "blur(12px)" },
+                hidden: { opacity: 0, y: 24, scale: 0.98 },
                 visible: {
                   opacity: 1,
                   y: 0,
                   scale: 1,
-                  filter: "blur(0px)",
-                  transition: { duration: 1.1, ease: cinemaTransit },
+                  transition: { duration: 0.9, ease: cinemaTransit },
                 },
               }}
               className="font-[family-name:var(--font-bebas)] text-7xl sm:text-8xl md:text-9xl lg:text-[9.5rem] tracking-tight text-white leading-[0.84] m-0"
@@ -270,33 +272,37 @@ export default function Hero() {
               {RECOGNITIONS.map((item, idx) => {
                 const IconComponent = item.icon;
                 return (
+                  /* Outer Entrance Container (Handles single slide-in from right) */
                   <motion.div
                     key={idx}
-                    initial={{ opacity: 0, x: 40, scale: 0.75, filter: "blur(10px)" }}
-                    animate={{ opacity: 1, x: 0, scale: 1, filter: "blur(0px)" }}
+                    initial={{ opacity: 0, x: 30, scale: 0.9 }}
+                    animate={{ opacity: 1, x: 0, scale: 1 }}
                     transition={{
-                      duration: 0.9,
+                      duration: 0.8,
                       ease: cinemaTransit,
-                      delay: 1.1 + idx * 0.16,
+                      delay: 0.5 + idx * 0.15,
                     }}
                     className={item.alignOffsetClass}
                   >
-                    <motion.div
-                      animate={{ y: [0, item.floatOffset, 0] }}
-                      transition={{
-                        repeat: Infinity,
-                        duration: item.floatDuration,
-                        ease: "easeInOut",
-                        delay: idx * 0.35,
+                    {/* 
+                      Native CSS Compositor Float:
+                      Pure 3D translate keyframe that never drops or pauses during scroll navigation.
+                    */}
+                    <div
+                      style={{
+                        animation: `${item.animationName} ${item.duration} ease-in-out infinite ${item.delay}`,
+                        backfaceVisibility: "hidden",
+                        WebkitBackfaceVisibility: "hidden",
+                        transform: "translate3d(0, 0, 0)",
                       }}
-                      className="flex flex-col items-center text-center cursor-default group transition-transform duration-500 w-[280px] xl:w-[340px]"
+                      className="flex flex-col items-center text-center cursor-default group transition-transform duration-300 w-[280px] xl:w-[340px]"
                     >
                       <div className="relative flex items-center justify-center">
                         {/* Left Laurel Branch */}
                         <motion.svg
                           initial={{ opacity: 0, scaleX: 0 }}
                           animate={{ opacity: 1, scaleX: 1 }}
-                          transition={{ duration: 0.7, delay: 1.35 + idx * 0.16 }}
+                          transition={{ duration: 0.5, delay: 0.7 + idx * 0.15 }}
                           className="w-10 h-22 xl:w-12 xl:h-26 text-[#8B5CF6]/70 -mr-2.5 transition-transform duration-300 group-hover:-translate-x-1.5"
                           viewBox="0 0 16 36"
                           fill="currentColor"
@@ -322,7 +328,7 @@ export default function Hero() {
                         <motion.svg
                           initial={{ opacity: 0, scaleX: 0 }}
                           animate={{ opacity: 1, scaleX: 1 }}
-                          transition={{ duration: 0.7, delay: 1.35 + idx * 0.16 }}
+                          transition={{ duration: 0.5, delay: 0.7 + idx * 0.15 }}
                           className="w-10 h-22 xl:w-12 xl:h-26 text-[#8B5CF6]/70 -ml-2.5 transform -scale-x-100 transition-transform duration-300 group-hover:translate-x-1.5"
                           viewBox="0 0 16 36"
                           fill="currentColor"
@@ -347,7 +353,7 @@ export default function Hero() {
                           {item.detail}
                         </p>
                       </div>
-                    </motion.div>
+                    </div>
                   </motion.div>
                 );
               })}
