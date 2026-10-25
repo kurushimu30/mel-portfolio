@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" fill="none">
+  <rect width="32" height="32" rx="8" fill="#0E1018" />
+  <!-- Cyan Glyph path or central beacon -->
+  <circle cx="16" cy="16" r="5" fill="#00E5FF" />
+  <circle cx="16" cy="16" r="9" stroke="#9B8AFB" stroke-width="1.5" stroke-dasharray="3 3" />
+</svg>
